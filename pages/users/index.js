@@ -1,4 +1,4 @@
-import { Grid, Paper } from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { Layout } from "../components/layouts";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -82,9 +82,19 @@ const Users = (props) => {
               p: 2,
               display: "flex",
               flexDirection: "column",
-              height: 400,
+              minHeight: 400,
             }}
           >
+            <Grid container sx={{ margin: 1 }}>
+              <Grid item xs={12} md={8} lg={8}>
+                <Typography variant="h6" component="h6">
+                  Tabel User
+                </Typography>
+              </Grid>
+              <Grid item lg={4} md={4} xs={12}>
+              <Button variant="outlined" sx={{float:'right', marginRight:1}}>Tambah User</Button>
+              </Grid>
+            </Grid>
             <DataGrid
               getRowId={(a) => a.id}
               rows={tableUser}
@@ -109,8 +119,7 @@ export const getServerSideProps = async () => {
     headers: {
       Accept: "application.json",
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuaXBwb3MiOiI5NzIzMjU5MzEiLCJlbWFpbCI6ImFhYUBocy5jb2EiLCJleHAiOjE2NjA4MzM1MzN9.R8WPb7ef52_Acdz_V_iShZocMkAuBlKMq0a6cA8Q4E4",
+      Authorization: "Bearer " + process.env.TOKEN,
     },
     body: JSON.stringify(bodyPost),
   });
