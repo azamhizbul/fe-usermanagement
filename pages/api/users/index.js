@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   });
   const dataUser = await rest;
   const dataRes = await dataUser.json();
-
+  console.log(dataRes);
   res.status(dataUser.status).json(dataRes);
 
 

@@ -1,6 +1,7 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import { Layout } from "../components/layouts";
 import { DataGrid } from "@mui/x-data-grid";
+import Link from "next/link";
 
 const columns = [
   // { field: 'id', headerName: 'ID', width: 90 },
@@ -53,6 +54,7 @@ const columns = [
 
 const Users = (props) => {
   const { dataUser } = props;
+  console.log(dataUser);
   const tableUser = [];
   if (dataUser.length != 0) {
     dataUser.map((a, idx) => {
@@ -69,9 +71,6 @@ const Users = (props) => {
     });
   }
 
-  console.log(tableUser);
-
-  // console.log(dataUser);
   return (
     <Layout titleHead="List User">
       <Grid container spacing={3}>
@@ -92,7 +91,9 @@ const Users = (props) => {
                 </Typography>
               </Grid>
               <Grid item lg={4} md={4} xs={12}>
+                <Link href={'/users/CreateUser'}>
               <Button variant="outlined" sx={{float:'right', marginRight:1}}>Tambah User</Button>
+              </Link>
               </Grid>
             </Grid>
             <DataGrid
@@ -114,7 +115,7 @@ const Users = (props) => {
 
 export const getServerSideProps = async () => {
   const bodyPost = { nippos: "" };
-  const res = await fetch("http://20.198.213.153:8001/getUser", {
+  const res = await fetch(process.env.URLUSERMANAGE+ "/getUser", {
     method: "POST",
     headers: {
       Accept: "application.json",
@@ -124,6 +125,7 @@ export const getServerSideProps = async () => {
     body: JSON.stringify(bodyPost),
   });
   const dataUser = await res.json();
+  console.log(dataUser)
   return {
     props: {
       dataUser,
