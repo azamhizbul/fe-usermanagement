@@ -8,12 +8,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Layout } from "../components/layouts";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const dataStatusPegawai = [
   {
@@ -26,11 +27,11 @@ const dataStatusPegawai = [
   },
 ];
 const CreateUsers = (props) => {
-  const [nama, setNama] = useState("");
+  const [nama, setNama] = useState('');
   const [email, setEmail] = useState("");
   const [nippos, setNippos] = useState("");
-  const [jabatan, setJabatan] = useState(0);
-  const [kantor, setKantor] = useState(0);
+  const [jabatan, setJabatan] = useState('');
+  const [kantor, setKantor] = useState('');
   const [statusAkun, setStatusAkun] = useState(1);
   const [statusPeg, setStatusPeg] = useState(1);
   const [password, setPassword] = useState("");
@@ -40,7 +41,7 @@ const CreateUsers = (props) => {
 
   const router = useRouter();
   const { dataKantor, dataJabatan } = props;
-  
+  const form = useRef()
   useEffect(() => {
     setKantor(dataKantor[0].id);
     setJabatan(dataJabatan[0].idjabatan);
@@ -122,7 +123,10 @@ const CreateUsers = (props) => {
                 </Typography>
               </Grid>
             </Grid>
-            <form onSubmit={handleSubmit}>
+            <ValidatorForm
+                ref={form}
+                onSubmit={handleSubmit}
+            >
               <TextField
                 id="statusPegawai"
                 select
@@ -139,7 +143,7 @@ const CreateUsers = (props) => {
                   </MenuItem>
                 ))}
               </TextField>
-              <TextField
+              <TextValidator
                 disabled={submit ? true : false}
                 fullWidth
                 label="Nama"
@@ -147,9 +151,11 @@ const CreateUsers = (props) => {
                 margin="normal"
                 size="small"
                 value={nama}
-                onChange={(e) => setNama(e.target.value)}
+                onChange={e => setNama(e.target.value)}
+                validators={['required']}
+                errorMessages={['field harus diisi']}
               />
-              <TextField
+              <TextValidator
                 disabled={submit ? true : false}
                 fullWidth
                 label="Email"
@@ -158,9 +164,11 @@ const CreateUsers = (props) => {
                 size="small"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                validators={['required', 'isEmail']}
+                errorMessages={['field harus diisi', 'format email salah']}
               />
               {statusPeg == 1 ? (
-                <TextField
+                <TextValidator
                   disabled={submit ? true : false}
                   fullWidth
                   label="NIPPOS"
@@ -169,6 +177,8 @@ const CreateUsers = (props) => {
                   size="small"
                   value={nippos}
                   onChange={(e) => setNippos(e.target.value)}
+                  validators={['required']}
+                  errorMessages={['field harus diisi']}
                 />
               ) : null}
               <TextField
@@ -207,7 +217,7 @@ const CreateUsers = (props) => {
                 ))}
               </TextField>
 
-              <TextField
+              <TextValidator
                 disabled={submit ? true : false}
                 fullWidth
                 label="Pawssword"
@@ -217,6 +227,8 @@ const CreateUsers = (props) => {
                 size="small"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                validators={['required']}
+                  errorMessages={['field harus diisi']}
               />
 
               <Button
@@ -227,7 +239,7 @@ const CreateUsers = (props) => {
               >
                 {submit ? <CircularProgress size={24} /> : "Simpan"}
               </Button>
-            </form>
+            </ValidatorForm>
           </Paper>
         </Grid>
       </Grid>
