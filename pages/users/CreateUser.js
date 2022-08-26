@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Layout } from "../components/layouts";
+import { Layout } from "../../components/layouts";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
@@ -84,8 +84,11 @@ const CreateUsers = (props) => {
 
   return (
     <Layout titleHead="Buat User">
-      <Grid container spacing={5}>
-        {/* Chart */}
+      <Grid container spacing={5} sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
         <Grid item xs={12} md={8} lg={8}>
           <Paper
             sx={{

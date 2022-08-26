@@ -1,5 +1,5 @@
 import { Grid, Paper } from "@mui/material"
-import { Layout } from "./components/layouts"
+import { Layout } from "../components/layouts"
 
 const Home = () => {
   return (

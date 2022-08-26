@@ -9,7 +9,7 @@ import {
   } from "@mui/material";
   import { useRouter } from "next/router";
   import { useEffect, useRef, useState } from "react";
-  import { Layout } from "../../../components/layouts";
+  import { Layout } from "../../components/layouts";
   import Alert from "@mui/material/Alert";
   import IconButton from "@mui/material/IconButton";
   import Collapse from "@mui/material/Collapse";
@@ -26,7 +26,7 @@ import {
       label: "Non Organik",
     },
   ];
-  const UpdateUser = (props) => {
+  const CreateUsers = (props) => {
     const [nama, setNama] = useState('');
     const [email, setEmail] = useState("");
     const [nippos, setNippos] = useState("");
@@ -34,22 +34,17 @@ import {
     const [kantor, setKantor] = useState('');
     const [statusAkun, setStatusAkun] = useState(1);
     const [statusPeg, setStatusPeg] = useState(1);
+    const [password, setPassword] = useState("");
     const [submit, setSubmit] = useState(false);
     const [error, setError] = useState(false);
     const [descErr, setDescErr] = useState("");
   
     const router = useRouter();
-    let { dataKantor, dataJabatan, dataUser } = props;
-    dataUser = dataUser[0]
+    const { dataKantor, dataJabatan } = props;
     const form = useRef()
     useEffect(() => {
-      console.log(dataUser);
-      setNama(dataUser.nama)
-      setEmail(dataUser.email)
-      setNippos(dataUser.nippos)
-      setKantor(dataUser.id_kantor);
-      setJabatan(dataUser.id_jabatan);
-      setStatusPeg(dataUser.status_pegawai)
+      setKantor(dataKantor[0].id);
+      setJabatan(dataJabatan[0].idjabatan);
     }, []);
   
     const handleSubmit = async (event) => {
@@ -64,13 +59,15 @@ import {
         kantor: kantor,
         statusakun: statusAkun,
         statuspegawai: statusPeg,
+        password: password,
       };
   
-      const res = await fetch("/api/users/updateUser", {
-        method: "PUT",
+      const res = await fetch("/api/users", {
+        method: "POST",
         headers: {
           Accept: "application.json",
           "Content-Type": "application/json",
+          Authorization: "Bearer " + process.env.TOKEN,
         },
         body: JSON.stringify(data),
       });
@@ -86,8 +83,12 @@ import {
     };
   
     return (
-      <Layout titleHead="Buat User">
-        <Grid container spacing={5}>
+      <Layout titleHead="Buat User Akes">
+        <Grid container spacing={5} sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
           <Grid item xs={12} md={8} lg={8}>
             <Paper
               sx={{
@@ -121,7 +122,7 @@ import {
               <Grid container sx={{ margin: 1 }}>
                 <Grid item xs={12} md={8} lg={8}>
                   <Typography variant="h6" component="h6">
-                    Form Edit User
+                    Form Tambah User
                   </Typography>
                 </Grid>
               </Grid>
@@ -158,7 +159,7 @@ import {
                   errorMessages={['field harus diisi']}
                 />
                 <TextValidator
-                  disabled={statusPeg == 2 ? true : false}
+                  disabled={submit ? true : false}
                   fullWidth
                   label="Email"
                   id="email"
@@ -219,6 +220,20 @@ import {
                   ))}
                 </TextField>
   
+                <TextValidator
+                  disabled={submit ? true : false}
+                  fullWidth
+                  label="Pawssword"
+                  id="password"
+                  type="password"
+                  margin="normal"
+                  size="small"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  validators={['required']}
+                    errorMessages={['field harus diisi']}
+                />
+  
                 <Button
                   disabled={submit ? true : false}
                   type="submit"
@@ -235,19 +250,7 @@ import {
     );
   };
   
-  export const getServerSideProps = async (context) => {
-    const {id} = context.params
-    
-    const resUser = await fetch(process.env.URLUSERMANAGE + "/getUser", {
-      method: "POST",
-      headers: {
-        Accept: "application.json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + process.env.TOKEN,
-      },
-      body: JSON.stringify({ nippos: id }),
-    });
-
+  export const getServerSideProps = async () => {
     const resKantor = await fetch(process.env.URLUSERMANAGE + "/getKantor", {
       method: "POST",
       headers: {
@@ -267,25 +270,17 @@ import {
       },
       body: JSON.stringify({ idJabatan: "" }),
     });
-    const statusUser = await resUser;
-    const dataUser = await statusUser.json();
+  
     const dataKantor = await resKantor.json();
     const dataJabatan = await resJabatan.json();
-
-    if (statusUser.status == 404) { 
-      return {
-        notFound: true,
-      }
-     }
   
     return {
       props: {
         dataKantor,
         dataJabatan,
-        dataUser
       },
     };
   };
   
-  export default UpdateUser;
+  export default CreateUsers;
   
