@@ -1,0 +1,20 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: fe-user-management
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fe-user-management
+  template:
+    metadata:
+      labels:
+        app: fe-user-management
+    spec:
+      containers:
+        - name: fe-user-management
+          image: poskurlog.azurecr.io/feusermanagement:{{GIT_COMMIT}}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3000
